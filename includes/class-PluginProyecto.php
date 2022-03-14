@@ -79,6 +79,7 @@ class PluginProyecto {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
+		$this->define_commit_types();
 	}
 
 	/**
@@ -122,6 +123,17 @@ class PluginProyecto {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-PluginProyecto-public.php';
 
+		/**
+         * The class responsible for defining new Job Type
+         * of the plugin.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-PluginProyecto-commit-type.php';
+
+		/**
+         * La clase responsable de la definición del widget de inscripción.
+         */
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-PluginProyectoWidgetSuscribe.php';
+
 		$this->loader = new PluginProyecto_Loader();
 
 	}
@@ -157,6 +169,11 @@ class PluginProyecto {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		$this->loader->add_action( 'admin_post_nopriv_PluginProyecto_suscribe', $plugin_admin, 'PluginProyecto_suscribe' );
+        $this->loader->add_action( 'admin_post_PluginProyecto_suscribe', $plugin_admin, 'PluginProyecto_suscribe' );
+
+		$plugin_shortcode = new PluginProyecto_shortcode();
+
 	}
 
 	/**
@@ -174,6 +191,17 @@ class PluginProyecto {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 	}
+
+	/**
+     * Register Job Type.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function define_commit_types() {
+	        // Register custom post types
+	        $Commit_Type = new PluginProyecto_commit_type();
+	    }
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.

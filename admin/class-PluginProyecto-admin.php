@@ -100,4 +100,39 @@ class PluginProyecto_Admin {
 
 	}
 
+	public function PluginProyecto_suscribe() {
+        $emailSuscriptor = htmlspecialchars($_POST["email"]);
+        if(!$this->getSuscriptor($emailSuscriptor)) {
+            $this->addSuscriptor($emailSuscriptor);            
+			$response['message'] = __("Inscripción registrada correctamente");
+		}else{
+			$response['message'] = __("Usted ya solicitó inscribirse");
+		}
+		exit(json_encode($response));	
+    }
+
+	public function getSuscriptor($emailSuscriptor) {
+		global $wpdb;
+ 
+			$table_name = $wpdb->prefix . "PluginProyectoSuscriptores";
+			$query = "SELECT count(email) FROM $table_name WHERE email = %s";
+			$existeSuscriptor = $wpdb->get_var( $wpdb->prepare($query, $emailSuscriptor)); 
+			return $existeSuscriptor > 0;
+	}
+		
+	public function addSuscriptor($emailSuscriptor) {
+		global $wpdb;
+ 
+			$table_name = $wpdb->prefix . "PluginProyectoSuscriptores";
+			$wpdb->insert(
+				$table_name,
+				array(
+						'email' => $emailSuscriptor,
+						'time' => current_time('mysql', 2),
+				),
+				array('%s')
+			);
+	}
+
+	
 }
